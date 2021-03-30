@@ -9,18 +9,25 @@ GSVPANO.PanoDepthLoader = function (parameters) {
     this.load = function(panoId) {
         var self = this,
             url;
+        // This url no longer works
+        // url = "http://maps.google.com/cbk?output=json&cb_client=maps_sv&v=4&dm=1&pm=1&ph=1&hl=en&panoid=" + panoId;
 
-        url = "http://maps.google.com/cbk?output=json&cb_client=maps_sv&v=4&dm=1&pm=1&ph=1&hl=en&panoid=" + panoId;
+        url = "https://www.google.com/maps/photometa/v1?authuser=0&hl=en&gl=uk&pb=!1m4!1smaps_sv.tactile!11m2!2m1!1b1!2m2!1sen!2suk!3m3!1m2!1e2!2s" +
+            panoId +
+            "!4m57!1e1!1e2!1e3!1e4!1e5!1e6!1e8!1e12!2m1!1e1!4m1!1i48!5m1!1e1!5m1!1e2!6m1!1e1!6m1!1e2!9m36!1m3!1e2!2b1!3e2!1m3!1e2!2b0!3e3!1m3!1e3!2b1!3e2!1m3!1e3!2b0!3e3!1m3!1e8!2b0!3e3!1m3!1e1!2b0!3e3!1m3!1e4!2b0!3e3!1m3!1e10!2b1!3e2!1m3!1e10!2b0!3e3"
 
-        $.ajax({
-                url: url,
-                dataType: 'jsonp'
+        fetch(url)
+            .then(res=>res.text())
+            .then(res=>JSON.parse(res.substr(4)))
+            .then(res=>res[1][0][5][0][5][1][2])
+            .then(res=>{
+                console.log(res);
+                return res;
             })
-            .done(function(data, textStatus, xhr) {
+            .then(dm => {
                 var decoded, depthMap;
-
                 try {
-                    decoded = self.decode(data.model.depth_map);
+                    decoded = self.decode(dm);
                     depthMap = self.parse(decoded);
                 } catch(e) {
                     console.error("Error loading depth map for pano " + panoId + "\n" + e.message + "\nAt " + e.filename + "(" + e.lineNumber + ")");
@@ -31,14 +38,14 @@ GSVPANO.PanoDepthLoader = function (parameters) {
                     self.onDepthLoad();
                 }
             })
-            .fail(function(xhr, textStatus, errorThrown) {
-                console.error("Request failed: " + url + "\n" + textStatus + "\n" + errorThrown);
+            .catch(e=>{
+                console.error("Request failed: " + url + "\n" + e);
                 var depthMap = self.createEmptyDepthMap();
                 if(self.onDepthLoad) {
                     self.depthMap = depthMap;
                     self.onDepthLoad();
                 }
-            })
+            });
     }
 
     this.decode = function(rawDepthMap) {
@@ -57,8 +64,7 @@ GSVPANO.PanoDepthLoader = function (parameters) {
         rawDepthMap = rawDepthMap.replace(/_/g,'/');
 
         // Decode and decompress data
-        compressedDepthMapData = $.base64.decode(rawDepthMap);
-        decompressedDepthMap = zpipe.inflate(compressedDepthMapData);
+        decompressedDepthMap = $.base64.decode(rawDepthMap);
 
         // Convert output of decompressor to Uint8Array
         depthMap = new Uint8Array(decompressedDepthMap.length);
