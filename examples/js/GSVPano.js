@@ -5,7 +5,7 @@ GSVPANO.PanoLoader = function (parameters) {
 
     var _parameters = parameters || {},
         _location,
-        _zoom = 0,
+        _zoom,
         _panoId,
         _panoClient = new google.maps.StreetViewService(),
         _count = 0,
@@ -79,7 +79,7 @@ GSVPANO.PanoLoader = function (parameters) {
         
         for( y = 0; y < h; y++) {
             for( x = 0; x < w; x++) {
-                url = 'http://maps.google.com/cbk?output=tile&panoid=' + _panoId + '&zoom=' + _zoom + '&x=' + x + '&y=' + y + '&' + Date.now();
+                url = 'http://maps.google.com/cbk?output=tile&panoid=' + _panoId + '&zoom=0&x=' + x + '&y=' + y + '&' + Date.now();
                 (function (x, y) { 
                     var img = new Image();
                     img.addEventListener('load', function () {
