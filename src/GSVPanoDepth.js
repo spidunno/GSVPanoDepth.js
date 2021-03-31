@@ -7,6 +7,7 @@ GSVPANO.PanoDepthLoader = function (parameters) {
         onDepthLoad = null;
 
     this.load = function(panoId) {
+        console.log("Getting depth map for panoid:", panoId);
         var self = this,
             url;
         // This url no longer works
