@@ -5,7 +5,7 @@ GSVPANO.PanoLoader = function (parameters) {
 
     var _parameters = parameters || {},
         _location,
-        _zoom,
+        _zoom = 0,
         _panoId,
         _panoClient = new google.maps.StreetViewService(),
         _count = 0,
