@@ -20,10 +20,6 @@ GSVPANO.PanoDepthLoader = function (parameters) {
             .then(res=>res.text())
             .then(res=>JSON.parse(res.substr(4)))
             .then(res=>res[1][0][5][0][5][1][2])
-            .then(res=>{
-                console.log(res);
-                return res;
-            })
             .then(dm => {
                 var decoded, depthMap;
                 try {
