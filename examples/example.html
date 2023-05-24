@@ -49,8 +49,10 @@
                 document.body.appendChild(this.canvas);
                 _depthLoader.load(this.panoId);
             };
-
-            _panoLoader.load(new google.maps.LatLng(42.345601, -71.098348));
+            const urlParams = new URLSearchParams(window.location.search);
+            const lat = urlParams.get('lat');
+            const long = urlParams.get('long')
+            _panoLoader.load(new google.maps.LatLng(parseFloat(lat) || 42.345601, parseFloat(long) || -71.098348));
         }
 
         window.onload = init;
