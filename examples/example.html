@@ -52,7 +52,7 @@
             const urlParams = new URLSearchParams(window.location.search);
             const lat = urlParams.get('lat');
             const long = urlParams.get('long')
-            _panoLoader.load(new google.maps.LatLng(parseFloat(lat) || 42.345601, parseFloat(long) || -71.098348));
+            _panoLoader.load(new google.maps.LatLng(parseFloat(lat) === NaN ? 42.345601 : parseFloat(lat), parseFloat(long) === NaN ? -71.098348 : parseFloat(long)));
         }
 
         window.onload = init;
